@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\PIMS.API.props" />
+</Project>
