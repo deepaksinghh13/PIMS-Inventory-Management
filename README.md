@@ -112,6 +112,9 @@ cd PIMS
 ### ✅ Swagger Api  
 ![Swagger API](Screenshot/SwaggerUi.png)
 
+### ✅ NLog Logging  
+![NLog](Screenshot/NLog.png)
+
  ### 👤 Author
  - Deepak Singh
  - [Email](151deepaksss@gmail.com)
