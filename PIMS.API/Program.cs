@@ -16,11 +16,19 @@ using PIMS.Application.IServices.IInventoryService;
 using PIMS.Application.Services.InventoryService;
 using PIMS.Application.IServices.ICategoriesService;
 using PIMS.Application.Services.CategoryService;
+using NLog.Web;
+using PIMS.API.LoggerMiddleware;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
+var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
+builder.Host.UseNLog();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -122,6 +130,28 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRequestResponseLogging();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogError(exception, "An unhandled exception occurred: {Message}", exception?.Message);
+
+        await context.Response.WriteAsync(new
+        {
+            StatusCode = context.Response.StatusCode,
+            Message = "An internal server error occurred."
+        }.ToString());
+    });
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
