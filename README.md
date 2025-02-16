@@ -105,7 +105,15 @@ cd PIMS
  ```
  ### 📖 Documentation
  [API documentation is available Here](https://localhost:5077/swagger)
+## 📸 Screenshots
+### ✅ Swagger Login  
+![Swagger Login](Screenshot/SwaggerLogin.png)
 
+### ✅ Swagger Api  
+![Swagger API](Screenshot/SwaggerUi.png)
+
+### ✅ Nlog Logging  
+![NLog](Screenshot/NLog.png)
  ### 👤 Author
  - Deepak Singh
  - [Email](151deepaksss@gmail.com)
